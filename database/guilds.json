@@ -1,1 +1,29 @@
-{"1099456169656979627": {"prefix": "!!", "welcome_message": "Welcome to the server!", "admin_roles": {}, "member_role": "", "muted_role": "", "audit_logs": 1116138808753266718}, "715685846283452466": {"prefix": "!", "welcome_message": "Welcome to the server!", "admin_roles": {"1115174310089347113": {"admin": true}}, "member_role": "716266657282261042", "muted_role": "", "audit_logs": 1114557676555354214}}
+{
+  "997820212369948682": {
+	"prefix": "r!",
+	"welcome_message": "Welcome to the server!",
+	"admin_roles": {
+	  "1020800581054509096": {
+		"admin": true
+	  },
+	  "997821593273258044": {
+		"admin": true
+	  },
+	  "1020800578001051779": {
+		"admin": true
+	  },
+	  "997821593835278398": {
+		"admin": true
+	  },
+	  "1020800334853058732": {
+		"admin": true
+	  }
+	},
+	"member_role": "",
+	"muted_role": "",
+	"audit_logs_channel": 1120462208908923001,
+	"staff_logs_channel": 997827484290662442,
+	"welcome_channel": 997824444204601414,
+	"public_log_channel": 997827502015783013
+  }
+}

@@ -2,14 +2,24 @@ import json
 import os
 
 
-class CustomDatabase:
-    def __init__(self, guilds_file='guilds.json', users_file='users.json'):
-        self.guilds_file = os.path.join('database', guilds_file)
-        self.users_file = os.path.join('database', users_file)
-        self.commands_file = os.path.join('database', 'commands.json')
+class Database:
+    def __init__(self):
+        self.guilds_file = os.path.join('database', 'guilds.json')
+        self.users_file = os.path.join('database', 'users.json')
+        self.commands_file = os.path.join('database', 'command_list.json')
+        self.blacklisted_file = os.path.join('database', 'blacklisted.json')
+        self.reminders_file = os.path.join('database', 'reminders.json')
+        self.usage_file = os.path.join('database', 'usage.json')
+        self.infractions_file = os.path.join('database', 'infractions.json')
+        self.tickets_file = os.path.join('database', 'tickets.json')
         self.ensure_file_exists(self.guilds_file)
         self.ensure_file_exists(self.users_file)
         self.ensure_file_exists(self.commands_file)
+        self.ensure_file_exists(self.blacklisted_file)
+        self.ensure_file_exists(self.reminders_file)
+        self.ensure_file_exists(self.usage_file)
+        self.ensure_file_exists(self.infractions_file)
+        self.ensure_file_exists(self.tickets_file)
 
     @staticmethod
     def ensure_file_exists(file_path):
@@ -74,3 +84,168 @@ class CustomDatabase:
 
     def read_command_data(self):
         return self.read_data(self.commands_file)
+
+    def read_blacklisted_words(self):
+        return self.read_data(self.blacklisted_file)
+
+    def add_reminder(self, data):
+        existing_data = self.get_reminders()
+        existing_data.update(data)
+        self.write_data(existing_data, self.reminders_file)
+
+    def delete_reminder(self, identifier):
+        data = self.get_reminders()
+        if identifier in data:
+            del data[identifier]
+            self.write_data(data, self.reminders_file)
+
+    def get_reminders(self):
+        return self.read_data(self.reminders_file)
+
+    def get_usage(self):
+        return self.read_data(self.usage_file)
+
+    def add_usage(self, data):
+        self.write_data(data, self.usage_file)
+
+    def delete_usage(self, identifier):
+        data = self.get_usage()
+        if identifier in data:
+            del data[identifier]
+            self.write_data(data, self.usage_file)
+
+    def get_guild_value(self, guild_id, key):
+        data = self.read_guild_data()
+        return self.get_value(data, f'{guild_id}.{key}')
+
+    def set_guild_value(self, guild_id, key, value):
+        data = self.read_guild_data()
+        self.set_value(data, f'{guild_id}.{key}', value)
+        self.write_guild_data(data)
+
+    def delete_guild_value(self, guild_id, key):
+        data = self.read_guild_data()
+        self.delete_value(data, f'{guild_id}.{key}')
+        self.write_guild_data(data)
+
+    def get_infractions(self):
+        return self.read_data(self.infractions_file)
+
+    def add_infraction(self, data, identifier):
+        existing_data = self.get_infractions()
+        option = data[str(identifier)]['type']
+        if option not in ['warn', 'mute', 'kick', 'ban', 'report']:
+            print("Invalid option")
+            return False
+
+        if option == 'warn':
+            option = 'warns'
+        elif option == 'mute':
+            option = 'mutes'
+        elif option == 'kick':
+            option = 'kicks'
+        elif option == 'ban':
+            option = 'bans'
+        elif option == 'report':
+            option = 'reports'
+
+        if option not in existing_data:
+            existing_data[option] = {}
+
+        identifier = list(data.keys())[0]  # Get the first (and only) key from the data dictionary
+        existing_data[option][identifier] = data[identifier]
+        self.write_data(existing_data, self.infractions_file)
+        return True
+
+    def delete_infraction(self, option, identifier):
+        if option not in ['warns', 'mutes', 'kicks', 'bans']:
+            return print("Invalid option")
+        if option == 'warn':
+            option = 'warns'
+        elif option == 'mute':
+            option = 'mutes'
+        elif option == 'kick':
+            option = 'kicks'
+        elif option == 'ban':
+            option = 'bans'
+        elif option == 'report':
+            option = 'reports'
+
+        data = self.get_infractions()
+        if option in data:
+            if identifier in data[option]:
+                del data[option][identifier]
+                self.write_data(data, self.infractions_file)
+                return True
+
+    def get_infraction(self, option, identifier):
+        if option not in ['warns', 'mutes', 'kicks', 'bans']:
+            return print("Invalid option")
+        if option == 'warn':
+            option = 'warns'
+        elif option == 'mute':
+            option = 'mutes'
+        elif option == 'kick':
+            option = 'kicks'
+        elif option == 'ban':
+            option = 'bans'
+        elif option == 'report':
+            option = 'reports'
+
+        data = self.get_infractions()
+        if option in data:
+            if identifier in data[option]:
+                return data[option][identifier]
+        return None
+
+    def get_infraction_count(self, option, user_id):
+        if option not in ['warns', 'mutes', 'kicks', 'bans']:
+            return print("Invalid option")
+        if option == 'warn':
+            option = 'warns'
+        elif option == 'mute':
+            option = 'mutes'
+        elif option == 'kick':
+            option = 'kicks'
+        elif option == 'ban':
+            option = 'bans'
+        elif option == 'report':
+            option = 'reports'
+
+        data = self.get_infractions()
+        if option in data:
+            count = 0
+            for identifier in data[option]:
+                if data[option][identifier]['user_id'] == user_id:
+                    count += 1
+            return count
+        return 0
+
+    # Tickets
+
+    def get_ticket_data(self):
+        return self.read_data(self.tickets_file)
+
+    def add_ticket(self, data, identifier):
+        existing_data = self.get_ticket_data()
+        if identifier not in existing_data:
+            existing_data[identifier] = data
+        self.write_data(existing_data, self.tickets_file)
+
+    def delete_ticket(self, identifier):
+        data = self.get_ticket_data()
+        if identifier in data:
+            del data[identifier]
+            self.write_data(data, self.tickets_file)
+
+    def get_ticket(self, identifier):
+        data = self.get_ticket_data()
+        if identifier in data:
+            return data[identifier]
+        return None
+
+    def edit_ticket(self, identifier, key, value):
+        data = self.get_ticket_data()
+        if identifier in data:
+            data[identifier][key] = value
+            self.write_data(data, self.tickets_file)
