@@ -1,15 +1,41 @@
+import discord
 from discord.ext import commands
+import asyncio
+
+from database import Database
+
+db = Database()
 
 
-class HelpCommand(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+@commands.command()
+async def help(ctx, command_name=None):
+    command_data = db.read_command_data()
+    if command_name is None or command_name.lower() == "all":
+        bot = ctx.bot
+        embed = discord.Embed(title="Available Commands", color=discord.Color.purple())
+        for command_name, command_info in command_data.items():
+            command_name_1 = command_name.replace("_", " ").title()
+            description = command_info.get("help", "No description provided.")
+            embed.add_field(name=str(command_name_1 + " (" + command_name + ")"), value=description, inline=False)
+        reply = await ctx.send(embed=embed)
+    else:
+        if command_name in command_data:
+            command_info = command_data[command_name]
+            embed = discord.Embed(title=f"Command Info: {command_name}", color=discord.Color.blue())
+            embed.description = f"**Description:** {command_info.get('help', 'No description provided')}\n"
+            embed.description += f"**Signature:** {command_info.get('signature', 'No signature provided')}\n"
+            custom_example = command_info.get('example')
+            if custom_example:
+                embed.description += f"**Custom Example:** {custom_example}"
+            reply = await ctx.send(embed=embed)
+        else:
+            reply = await ctx.send("Command not found.")
 
-    @commands.command(name='help_custom', example="",signature="")
-    async def help_custom(self, ctx):
-        # Help command logic
-        await ctx.send('Custom help command')
+    await asyncio.sleep(5)
+    await ctx.message.delete()
+    await reply.delete()
+
 
 
 def setup(bot):
-    bot.add_cog(HelpCommand(bot))
+    bot.add_command(help)

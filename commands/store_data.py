@@ -1,19 +1,26 @@
-from discord.ext import commands
 import json
-from main import db
+
+from discord.ext import commands
+
+from database import Database
+
+db = Database()
 
 
-@commands.command(help="Store self.", example="",signature="")
+@commands.command()
 async def store_data(ctx, key, *, value):
+    if ctx.author.id != 801384603704623115:
+        await ctx.send("Only Rune or ModGPT Staff can use this command.")
+        return
     try:
-        data = db.read_data()
+        data = db.read_command_data()
         db.set_value(data, key, json.loads(value))
-        db.write_data(data)
+        db.write_data(data, db.commands_file)
         await ctx.send(f'Data stored for key {key}')
     except json.JSONDecodeError:
         await ctx.send("Invalid JSON format. Please provide a valid JSON value.")
     except Exception as e:
-        await ctx.send(f"An error occurred while storing self: {str(e)}")
+        await ctx.send(f"An error occurred while storing data: {str(e)}")
 
 
 def setup(bot):

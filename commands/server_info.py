@@ -1,8 +1,14 @@
 import discord
 from discord.ext import commands
+from database import Database
+
+db = Database()
+
+command_data = db.read_command_data()
 
 
-@commands.command(help="Displays server information.", example="",signature="")
+@commands.command(help=command_data["server_info"]["help"], example=command_data["server_info"]["example"],
+                  signature=command_data["server_info"]["signature"])
 async def server_info(ctx):
     server = ctx.guild
     total_members = server.member_count

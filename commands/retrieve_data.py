@@ -1,10 +1,14 @@
 import discord
 from discord.ext import commands
-from database import CustomDatabase
+from database import Database
 
-db = CustomDatabase(guilds_file='guilds.json', users_file='users.json')
+db = Database()
 
-@commands.command(help="Retrieve data.", example="",signature="")
+command_data = db.read_command_data()
+
+
+@commands.command(help=command_data["retrieve_data"]["help"], example=command_data["retrieve_data"]["example"],
+                  signature=command_data["retrieve_data"]["signature"])
 async def retrieve_data(ctx, option, key):
     if option.lower() == "user":
         data = db.read_user_data()
@@ -13,7 +17,7 @@ async def retrieve_data(ctx, option, key):
             await ctx.send("User data not found.")
             return
         data = data[user_id]
-    elif option.lower() == "self":
+    elif option.lower() == "guild":
         data = db.read_guild_data()
         if key.lower() == "self":
             guild_id = str(ctx.guild.id)
@@ -25,11 +29,11 @@ async def retrieve_data(ctx, option, key):
         else:
             guild_data = db.get_value(data, key)
             if guild_data is None:
-                await ctx.send(f"No data found for self ID {key}.")
+                await ctx.send(f"No data found for Guild ID {key}.")
                 return
             data = guild_data
     else:
-        await ctx.send("Invalid option. Please choose either 'user' or 'self'.")
+        await ctx.send("Invalid option. Please choose either 'user' or 'guild'.")
         return
 
     if isinstance(data, dict):

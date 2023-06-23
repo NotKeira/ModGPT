@@ -38,7 +38,15 @@ lyrics = [
     "So that you can brag to your friends"
 ]
 
-@commands.command(help="Sing the lyrics of '100 Digits of Pi' by ASAPScience.", example="",signature="")
+from database import Database
+
+db = Database()
+
+command_data = db.read_command_data()
+
+
+@commands.command(help=command_data["pi"]["help"], example=command_data["pi"]["example"],
+                  signature=command_data["pi"]["signature"])
 async def pi(ctx):
     for line in lyrics:
         await ctx.send(line)

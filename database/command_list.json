@@ -1,0 +1,97 @@
+{
+  "admins": {
+	"help": "Retrieve admins for the server.",
+	"example": "admins",
+	"signature": "admins"
+  },
+  "ban": {
+	"help": "Ban a member from the server.",
+	"example": "ban @username",
+	"signature": "ban <user>"
+  },
+  "kick": {
+	"help": "Kick a member from the server.",
+	"example": "kick @username",
+	"signature": "kick <user>"
+  },
+  "config": {
+	"help": "Configure the bot.",
+	"example": "config prefix !",
+	"signature": "config <key> <value>"
+  },
+  "help": {
+	"help": "Retrieve help for a command.",
+	"example": "help ping",
+	"signature": "help <command>"
+  },
+  "ping": {
+	"help": "Ping the bot.",
+	"example": "ping",
+	"signature": "ping"
+  },
+  "pi": {
+	"help": "Retrieve pi.",
+	"example": "pi",
+	"signature": "pi"
+  },
+  "retrieve_data": {
+	"help": "Retrieve data for the server or a user.",
+	"example": "retrieve_data server key",
+	"signature": "retrieve_data [server/user] <key>"
+  },
+  "store_data": {
+	"help": "Store data for the server or a user.",
+	"example": "store_data server key value",
+	"signature": "store_data [server/user] <key> <value>"
+  },
+  "whois": {
+	"help": "Retrieve information about a user.",
+	"example": "whois @username",
+	"signature": "whois <user>"
+  },
+  "server_info": {
+	"help": "Retrieve information about the server.",
+	"example": "server_info",
+	"signature": "server_info"
+  },
+  "reminder": {
+	"help": "Set a reminder.",
+	"example": "reminder 1h do something",
+	"signature": "reminder <time> <message>"
+  },
+  "reminders": {
+	"help": "Retrieve a list of reminders.",
+	"example": "reminders",
+	"signature": "reminders"
+  },
+  "set_base_data": {
+	"help": "Set base data for the server or a user.",
+	"example": "set_base_data server key value",
+	"signature": "set_base_data [server/user] <key> <value>"
+  },
+  "staff": {
+	"help": "Run a staff command.",
+	"example": "staff command",
+	"signature": "staff <command>"
+  },
+  "warn": {
+	"help": "Warn a member.",
+	"example": "warn @username reason",
+	"signature": "warn <user> [reason]"
+  },
+  "whoami": {
+	"help": "Retrieve information about the bots.",
+	"example": "whoami",
+	"signature": "whoami"
+  },
+  "colour": {
+	"help": "Retrieve a colour.",
+	"example": "colour #ffffff",
+	"signature": "colour <colour>"
+  },
+  "setup": {
+	"help": "Setup the bot.",
+	"example": "setup",
+	"signature": "setup"
+  }
+}
